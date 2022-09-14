@@ -6,6 +6,8 @@ data "terraform_remote_state" "cloud" {
 module "exafunction_kube" {
   source = "../.."
 
+  cluster_name = var.cluster_name
+
   exadeploy_helm_values_path = "${path.module}/values.yaml"
 
   exafunction_api_key = var.api_key
@@ -21,4 +23,9 @@ module "exafunction_kube" {
   cloud_sql_port            = data.terraform_remote_state.cloud.outputs.exafunction_module_repo_backend.cloud_sql_port
   cloud_sql_username        = data.terraform_remote_state.cloud.outputs.exafunction_module_repo_backend.cloud_sql_username
   cloud_sql_password        = data.terraform_remote_state.cloud.outputs.exafunction_module_repo_backend.cloud_sql_password
+
+  enable_grafana_public_address = true
+  enable_prom_remote_write      = true
+  prom_remote_write_username    = var.prom_remote_write_username
+  prom_remote_write_password    = var.prom_remote_write_password
 }
