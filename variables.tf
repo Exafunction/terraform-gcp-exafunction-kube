@@ -1,4 +1,13 @@
 ################################################################################
+# EKS Cluster                                                                  #
+################################################################################
+
+variable "cluster_name" {
+  description = "Name of the Exafunction EKS cluster."
+  type        = string
+}
+
+################################################################################
 # ExaDeploy Helm Chart                                                         #
 ################################################################################
 
@@ -137,6 +146,51 @@ variable "cloud_sql_password_secret_name" {
 
 variable "cloud_sql_password" {
   description = "Password for CloudSQL instance. This will be stored in the CloudSQL password Kubernetes secret."
+  type        = string
+  sensitive   = true
+  default     = null
+}
+
+################################################################################
+# Prometheus Helm Chart                                                        #
+################################################################################
+
+variable "enable_grafana_public_address" {
+  description = "Whether the Grafana service will be accessible via a public address. If false, the Grafana service will only be accessible via a private address within the VPC."
+  type        = bool
+  default     = false
+}
+
+#######################################
+# Remote Write                        #
+#######################################
+
+variable "enable_prom_remote_write" {
+  description = "Whether to enable remote writing Prometheus metrics to the Exafunction receiving endpoint. If true, all `prom_remote_*` variables must be set."
+  type        = bool
+  default     = true
+}
+
+variable "prom_remote_write_target_url" {
+  description = "Prometheus remote write target url."
+  type        = string
+  default     = "https://prometheus.exafunction.com/api/v1/write"
+}
+
+variable "prom_remote_write_basic_auth_secret_name" {
+  description = "Prometheus remote write basic auth Kubernetes secret name. This secret will be created by this module."
+  type        = string
+  default     = "prom-remote-write-basic-auth-secret"
+}
+
+variable "prom_remote_write_username" {
+  description = "Username (e.g. company name) for Prometheus remote write which will be used as a Prometheus label and basic auth username. This will be stored in the Prometheus remote write basic auth Kubernetes secret."
+  type        = string
+  default     = null
+}
+
+variable "prom_remote_write_password" {
+  description = "Prometheus remote write basic auth password. This will be stored in the Prometheus remote write basic auth Kubernetes secret."
   type        = string
   sensitive   = true
   default     = null
